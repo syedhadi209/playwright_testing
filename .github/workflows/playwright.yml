@@ -1,27 +1,42 @@
 name: Playwright Tests
+
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Checkout code
+        uses: actions/checkout@v2 # You can use version 2 for compatibility with older workflows
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2 # Use version 2 for compatibility
+        with:
+          node-version: 14 # You can specify your desired Node.js version
+
+      - name: Install dependencies
+        run: npm ci # Use "npm ci" for faster and more reliable dependency installation
+
+      - name: Install Playwright Browsers
+        run: npx playwright install # This will install Playwright browsers
+
+      - name: Run Playwright tests
+        run: npx playwright test # Run your Playwright tests
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v2 # You can use version 2
+        if: always() # Always upload the report, even if tests fail
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30 # Adjust retention days as needed
